@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView logview;
     private EditText input;
     private Button button;
+    private Button buzzButton;
 
     private final ArrayList<ChatMessage> chatLog = new ArrayList<>();
     private ArrayAdapter<ChatMessage> chatLogAdapter;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         progress = findViewById(R.id.main_progress);
         input = findViewById(R.id.main_input);
         button = findViewById(R.id.main_button);
+        buzzButton = findViewById(R.id.buzz_button);
 
         chatLogAdapter = new ArrayAdapter<ChatMessage>(this, 0, chatLog) {
             @Override
@@ -145,11 +147,18 @@ public class MainActivity extends AppCompatActivity {
                     activity.setState(State.Disconnected);
                     break;
                 case Agent.MSG_RECEIVED:
-                    activity.showMessage((ChatMessage) msg.obj);
+                    ChatMessage chat_data = (ChatMessage) msg.obj;
+                    if (chat_data.buzz == 1){
+                        activity.playBuzz();
+                    }
+                    else{
+                        activity.showMessage((ChatMessage) msg.obj);
+                    }
                     break;
             }
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -228,12 +237,22 @@ public class MainActivity extends AppCompatActivity {
         }
         messageSeq++;
         long time = System.currentTimeMillis();
-        ChatMessage message = new ChatMessage(messageSeq, time, content, adapter.getName());
+        ChatMessage message = new ChatMessage(messageSeq, time, content, adapter.getName(),0);
         agent.send(message);
         chatLogAdapter.add(message);
         chatLogAdapter.notifyDataSetChanged();
         logview.smoothScrollToPosition(chatLog.size());
         input.getEditableText().clear();
+    }
+
+    public void onClickBuzzButton(View v){
+        Log.d(TAG, "onClickBuzzButton");
+
+        Toast.makeText(this,"Buzz sent!", Toast.LENGTH_SHORT).show();
+        messageSeq++;
+        long time = System.currentTimeMillis();
+        ChatMessage message = new ChatMessage(messageSeq,time, "",adapter.getName(),1);
+        agent.send(message);
     }
 
     public void setState(State state) {
@@ -244,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         this.state = state;
         input.setEnabled(state == State.Connected);
         button.setEnabled(state == State.Connected);
+        buzzButton.setEnabled(state == State.Connected);
         switch (state) {
         case Initializing:
         case Disconnected:
@@ -268,9 +288,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showMessage(ChatMessage message) {
+        Log.d(TAG, "showMessage");
         chatLogAdapter.add(message);
         chatLogAdapter.notifyDataSetChanged();
         logview.smoothScrollToPosition(chatLogAdapter.getCount());
+    }
+
+    private void playBuzz() {
+        // play Buzz
+        Log.d(TAG, "playBuzz");
+        soundPlayer.playBuzz();
     }
 
     private void disconnect() {

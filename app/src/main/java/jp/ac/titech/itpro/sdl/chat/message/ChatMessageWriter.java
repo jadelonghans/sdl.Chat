@@ -2,6 +2,7 @@ package jp.ac.titech.itpro.sdl.chat.message;
 
 import android.util.JsonWriter;
 import android.util.Log;
+import android.view.ViewDebug;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -39,8 +40,11 @@ public class ChatMessageWriter implements Closeable {
         Log.d(TAG, "write");
         writer.beginObject();
         writer.name(ChatMessage.FIELD_SEQ).value(message.seq);
+//        Log.d(TAG,"Value of seq is" + String.valueOf(message.seq));
         writer.name(ChatMessage.FIELD_TIME).value(message.time);
+        //writing FIELD_CONTENT starts here
         writer.name(ChatMessage.FIELD_CONTENT);
+
         if (message.content == null) {
             writer.nullValue();
         } else {
@@ -52,6 +56,13 @@ public class ChatMessageWriter implements Closeable {
         } else {
             writer.value(message.sender);
         }
+        //writing FIELD_CONTENT ends here
+
+        if (message.buzz == 0)
+            Log.d(TAG,"Value of buzz is 0");
+        else
+            Log.d(TAG, "Value of buzz is 1" );
+        writer.name(ChatMessage.FIELD_BUZZ).value(message.buzz);
         writer.endObject();
     }
 }

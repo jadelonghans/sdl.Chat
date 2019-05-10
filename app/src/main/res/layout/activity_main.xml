@@ -46,9 +46,10 @@
         android:hint="@string/main_input_hint"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buzz_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/main_button"
-        app:layout_constraintTop_toBottomOf="@id/main_logview" />
+        app:layout_constraintTop_toBottomOf="@id/main_logview"
+    />
 
     <Button
         android:id="@+id/main_button"
@@ -59,5 +60,18 @@
         android:text="@string/main_button_label"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buzz_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:onClick="onClickBuzzButton"
+        android:text="@string/buzz_button_label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/main_input"
+        app:layout_constraintEnd_toStartOf="@id/main_button"
+        app:layout_constraintTop_toBottomOf="@id/main_logview"
+    />
 
 </android.support.constraint.ConstraintLayout>
